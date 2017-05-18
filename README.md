@@ -7,10 +7,6 @@
 压缩已经合成的本地视频和上传七牛云存储
 entry流播放性能优化
 视频播放缓存
-测试和预研
-* 选填。如果之前做了一些技术调研、竞品分析、多种实现方案对比，请在这里描述。
-技术调研:
-在前期技术调研过程中，主要参考上述[技术设计目标]来进行，主要涉及以下方向
 
 视频正常录制  iOS视频录制主要使用AVFoundtion框架，有两种实现方案，分别是使用AVCaptureFileOutPutRecordingDelegate和AVCaptureAudioDataOutPutSampleBufferDelegate+AVCaptureVideoDataOutPutSampleBufferDelegate。使用前者是直接从代理回调中获取录制的文件存储地址，开启一个计时器NStimer控制时间和分段录制，比较简单，但是缺点是录制的文件体积比较大，压缩参数设置有限，并且压缩时间比较长; 使用后者稍微麻烦，需要对音频和视频单独处理，实时写入指定的文件路劲中，分段录制时间节点也需要实时计算得出，但是优点很多，在录制时候就可以设置很多音频和视频的压缩参数，可以针对每一帧图片处理，视频体积也比较小，可操作空间更大.
 分段录制  由于系统API没有提供暂停的原生支持，需要在每次暂停时候通过获取到的sampleBuffer里面获取到时间信息，记录一个时间戳，再次启动时候重新生成一个文件写入路劲，最后完成时候进行视频合成处理.
@@ -20,10 +16,6 @@ entry流播放性能优化
 视频播放 视频播放使用AVFoundtion框架的AVPlayer，原因是UI需要自定义.
 视频缓存 播放的视频需要缓存下来，iOS提供一个中间代理AVAssetResourceLoader变下边播.
        
-设计详情
-* 必填。具体描述设计的内容，自由发挥，文字图标均可。
-文字描述:
-
 录制
 首先获取相机、麦克风权限
 获取前(后)摄像头device
@@ -37,7 +29,8 @@ entry流播放性能优化
  暂停清空之前初始化好的writer，再次启动重新生成writer，指定新的文件路劲，记录时间戳，这样就产生了分段视频
 录制达到指定时间或者手动到下一步，取出所有录制好的文件，进行拼接压缩，导出至指定格式，完毕
 
-                                                                 
+                                                                 
+
 
 KEPAVCaptureManager
 抽象出的拍照和视频基础管理类
@@ -69,9 +62,7 @@ KEPVideoPlayerFullScreenPreView
 全屏预览播放视频类
 
 
-备注
-需要注意的地方
-* 选填。需要补充的点，遇到的坑之类的。
+注:
 切换摄像头等操作必须要锁住当前session，在beginConfiguration/commitconfiguration进行
 不要在session start之后才设置session相关输入输出配置，会出现闪烁     
 不要设置AVAssetWriter实例movieFragmentInterval的属性，大坑(原因没有定位到，可能是设置帧率最小间隔和buffer返回时间不一致导致的)，会出现音频和视频随机性appendSampleBuffer失败，这个坑微信小视频有提到过，在开发过程中掉在这个坑里花费时间最长
